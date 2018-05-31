@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+    <!--<link href="https://unpkg.com/picnic" rel="stylesheet">
+    <!--<link rel="stylesheet" href="style.css">-->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>-->
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css" />
+    <title>Anima</title>
+</head>
+<body>
+
+<!--
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <li><a class="#">ANIMA</a></li>
+        </div>
+        <ul class="nav navbar-nav">
+            <li><a class="libros" href="#">LIBROS</a></li>
+        </ul>
+    </div>
+</nav>
+-->
+<br><br><br>
+<script id="libros_template" type="text/x-handlebars-template">
+
+    <div>
+        <h1>Libros de Rol de Anima</h1>
+
+        <table>
+
+            <thead>
+            <tr>
+                <th>
+                    Título
+                </th>
+                <th>
+                    Año Publicación
+                </th>
+                <th>
+                    Num. Paginas
+                </th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {{for Anima_Libros}}
+            <tr>
+                <td>
+                    <a href="#!/libros/{{:_id}}" >{{:Titulo}}</a>
+                </td>
+                <td>
+                    {{:Ano}}
+                </td>
+                <td>
+                    {{:Paginas}}
+                </td>
+                <td>
+                    <a href="#!/libros/{{:_id}}/delete" class="btn btn-danger delete">Borrar</a>
+                    <a href="#!/libros/{{:_id}}/modify" class="btn btn-warning modify">Modificar</a>
+                </td>
+            </tr>
+            {{/for}}
+            </tbody>
+        </table>
+        <br>
+        <div>
+            <a href="#!/libros/add" class="btn btn-primary add">Añadir</a>
+        </div>
+        <br>
+
+        <a href="rss" class="rss"><img class="rss" src="http://1.bp.blogspot.com/-AP9jQSaZwa8/VU2wVii6sSI/AAAAAAAALyI/UG0cMnmfyEQ/s1600/Rss112.png" alt=""></a>
+
+    </div>
+</script>
+
+<script id="libro_template" type="text/x-handlebars-template">
+    <div>
+        <table>
+
+            <thead>
+            <tr>
+                <th>
+                    Título
+                </th>
+                <th>
+                    Año Publicación
+                </th>
+                <th>
+                    Num. Paginas
+                </th>
+                <th>
+                    Temas
+                </th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr>
+                <td>
+                    {{:Titulo}}
+                </td>
+                <td>
+                    {{:Ano}}
+                </td>
+                <td>
+                    {{:Paginas}}
+                </td>
+                <td>
+                    {{:Temas}}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+
+    </div>
+</script>
+
+<script id="add_libro_template" type="text/x-handlebars-template">
+    <div class="container">
+        <h1>Añadir libro</h1>
+        <form action="">
+            <label for="Id">ID</label>
+            <input type="text" name="Id" id="Id">
+
+            <br>
+
+            <label for="Titulo">Titulo</label>
+            <input type="text" name="Titulo" id="Titulo">
+
+            <br>
+
+            <label for="Ano">Año Publicación</label>
+            <input type="text" name="Ano" id="Ano">
+
+            <br>
+
+            <label for="Paginas">Num. Paginas</label>
+            <input type="text" name="Paginas" id="Paginas">
+
+            <br>
+
+            <label for="Temas">Temas</label>
+            <input type="text" name="Temas" id="Temas">
+
+            <button type="submit" class="btn btn-primary add-form-submit">OK</button>
+        </form>
+    </div>
+</script>
+
+<script id="modify_libro_template" type="text/x-handlebars-template">
+    <div class="container">
+        <h1>Modify {{:Titulo}}</h1>
+        <form action="">
+            <label for="Titulo">Titulo</label>
+            <input type="text" name="Titulo" id="Titulo"
+                   value="{{:Titulo}}">
+
+            <br>
+
+            <label for="Ano">Año Publicación</label>
+            <input type="text" name="Ano" id="Ano"
+                   value="{{:Ano}}">
+
+            <br>
+
+            <label for="Paginas">Num. Paginas</label>
+            <input type="text" name="Paginas" id="Paginas"
+                   value="{{:Paginas}}">
+
+            <br>
+
+            <label for="Temas">Temas</label>
+            <input type="text" name="Temas" id="Temas"
+                   value="{{:Temas}}">
+
+            <button data-id="{{:id}}" type="submit" class="btn btn-primary modify-form-submit">OK</button>
+        </form>
+    </div>
+</script>
+
+<script id="register_template" type="text/x-handlebars-template">
+    <div class="container">
+        <h1>Registrar</h1>
+        <form action="">
+            <label for="Titulo">Nombre de usuario:</label>
+            <input type="text" name="username" id="username">
+            <br>
+            <label for="Ano">Contraseña:</label>
+            <input type="text" name="password" id="password">
+            <br>
+            <button type="submit" class="btn btn-primary register-form-submit">OK</button>
+        </form>
+    </div>
+</script>
+
+<script id="login_template" type="text/x-handlebars-template">
+    <div class="container">
+        <h1>Login</h1>
+        <form>
+            <label for="Titulo">Nombre de usuario:</label>
+            <input type="text" name="username" id="username">
+            <br>
+            <label for="Ano">Contraseña:</label>
+            <input type="text" name="password" id="password">
+            <br>
+            <button type="submit" class="btn btn-primary login-form-submit">OK</button>
+        </form>
+    </div>
+</script>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
+    <a class="navbar-brand" href="#!/">Libros</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#!/register">Register</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#!/login">Login</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div id="app"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsrender/0.9.90/jsrender.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-serialize-object/2.5.0/jquery.serialize-object.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+<script src="//unpkg.com/navigo@6"></script>
+
+<script>
+
+    var root = null;
+    var useHash = true;
+    var hash = '#!';
+    var router = new Navigo(root, useHash, hash);
+
+    router
+        .on('/', showLibros)
+        .on('/register', register)
+        .on('/login', login)
+        .on('/libros/add', addLibro)
+        .on('/libros/:id', showLibro)
+        .on('/libros/:id/delete', deleteLibro)
+        .on('/libros/:id/modify', modifyLibro)
+        .resolve();
+
+    var storage = window.localStorage;
+    var token = storage.getItem("token");
+
+    console.log(token);
+
+    function loginFormSubmit(event) {
+        event.preventDefault();
+
+        var form = $("form");
+
+        var data = form.serializeObject();
+        console.log(data);
+
+        $.post("/api/auth/login/", data, function(result){
+            var type = "success";
+            var text = "Logged in";
+
+            new Noty({
+                text: result.msg,
+                type: type,
+                layout: 'topCenter',
+                timeout: 3000
+            }).show();
+
+            console.log(result);
+
+            storage.setItem("token", result.token);
+
+            router.navigate('/');
+        }).catch(function (error){
+            var type = "error";
+            var text = "Error logging in";
+
+            new Noty({
+                text: text,
+                type: type,
+                layout: 'topCenter',
+                timeout: 3000
+            }).show();
+
+            console.log(error);
+        });
+        /*
+        $.post("register/",data, function(result){
+            router.navigate('/');
+        });
+        */
+    }
+
+    function login() {
+        var html = $("#login_template").render();
+
+        $("#app").html(html);
+
+        $(".login-form-submit").on("click", loginFormSubmit);
+    }
+
+    function registerFormSubmit(event) {
+        event.preventDefault();
+
+        var form = $("form");
+
+        var data = form.serializeObject();
+        console.log(data);
+
+        $.post("/api/auth/register/",data , function(result){
+            console.log(result);
+            if(result.success){
+                var type = "success";
+            } else {
+                var type = "error";
+            }
+            new Noty({
+                text: result.msg,
+                type: type,
+                layout: 'topCenter',
+                timeout: 3000
+            }).show();
+            router.navigate('/');
+        }).catch(function (error){
+            console.log(error);
+        });
+        /*
+        $.post("register/",data, function(result){
+            router.navigate('/');
+        });
+        */
+    }
+
+    function register() {
+        var html = $("#register_template").render();
+
+        $("#app").html(html);
+
+        $(".register-form-submit").on("click", registerFormSubmit);
+    }
+    
+    function showLibros() {
+        $.getJSON("/api/Anima/", function (data) {
+            console.log(data);
+
+            var html = $("#libros_template").render(data);
+
+            $("#app").html(html);
+
+            /*
+            $(".details").on("click", showLibro);
+            $(".delete").on("click", deleteLibro);
+            $(".modify").on("click", modifyLibro);
+            $(".add").on("click", addLibro);
+            */
+
+        });
+    }
+
+    function showLibro(params) {
+        event.preventDefault();
+        console.log(params.id);
+
+        //var id = $(this).data("id");
+
+        $.ajax({
+            url: '/api/Anima/' + params.id,
+            type: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        }).then(function(result){
+            console.log(result);
+            router.navigate('/libros/' + params.id);
+            var html = $("#libro_template").render(result);
+
+            $("#app").html(html);
+        });
+
+       /* $.getJSON("/api/Anima/" + params.id, function (data) {
+            console.log(data);
+            var html = $("#libro_template").render(data);
+
+            $("#app").html(html);
+        });*/
+    }
+
+    function deleteLibro(params) {
+        /*
+        event.preventDefault();
+
+        var id = $(this).data("id");
+        */
+
+        $.ajax({
+            url: '/api/Anima/' + params.id,
+            type: 'DELETE',
+            headers: {
+                'Authorization': token,
+            }
+        }).then(function(result){
+            router.navigate('/');
+        });
+    }
+
+    function modifyLibro(params) {
+        /*
+        event.preventDefault();
+
+        var id = $(this).data("id");
+        */
+
+        $.getJSON("/api/Anima/" + params.id, function (data) {
+            console.log(data[0]);
+            data = data[0];
+            var html = $("#modify_libro_template").render(data);
+
+            $("#app").html(html);
+
+            $(".modify-form-submit").on("click", modifyFormSubmit);
+
+        });
+    }
+
+    function addLibro() {
+        //event.preventDefault();
+
+        var html = $("#add_libro_template").render();
+
+        $("#app").html(html);
+
+        $(".add-form-submit").on("click", addFormSubmit);
+
+    }
+
+    function modifyFormSubmit(event) {
+        event.preventDefault();
+
+        var form = $("form");
+
+        var data = form.serializeObject();
+        var button = $("form > button");
+
+        var id = button.data("id");
+
+        $.post("/api/Anima/" + id ,data, function(result){
+            router.navigate('/');
+        });
+        console.log(data);
+    }
+
+    function addFormSubmit(event) {
+        event.preventDefault();
+
+        var form = $("form");
+
+        var data = form.serializeObject();
+
+        $.post("/api/Anima/",data, function(result){
+            router.navigate('/');
+        });
+    }
+
+    function showrss(event) {
+        event.preventDefault();
+
+        $.post("/rss",data, function(result){
+            var html = $("#rss").render(data);
+
+            $("#app").html(html);
+        });
+
+    }
+    /*
+    $(document).ready(function () {
+        showLibros();
+
+        $(".libros").on("click", function (event) {
+            event.preventDefault();
+
+            showLibros();
+        });
+
+    });
+    */
+
+</script>
+
+</body>
+</html>
